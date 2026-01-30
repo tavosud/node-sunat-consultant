@@ -91,7 +91,7 @@ async function runScraper(id, tipo) {
         console.log(`[Scraper] ✅ Finalizado con éxito para: ${id}`);
         return { success: true, data: datos };
     } catch (e) {
-        console.error(`[Scraper] ❌ Error: ${e.message}`);
+        console.error(`[Scraper] Error: ${e.message}`);
         return { success: false, message: "Error en Scraper: " + e.message };
     } finally {
         await browser.close();
