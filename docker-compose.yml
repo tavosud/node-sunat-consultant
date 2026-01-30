@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  sunat-api:
+    build: .
+    container_name: sunat-microservice-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: always
+    # Limitamos recursos para que el navegador no consuma toda la RAM del host
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
