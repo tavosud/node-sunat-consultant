@@ -4,7 +4,7 @@ Este microservicio es una API REST construida con **Node.js**, **Express** y **P
 
 ## Características
 
-* **Extracción Completa:** Captura RUC, Razón Social, Nombre Comercial, Estado, Condición, Domicilio Fiscal y Actividades Económicas.
+* **Extracción Completa:** Captura RUC, Razón Social, Nombre Comercial, Estado, Condición, Domicilio Fiscal.
 * **Bypass de Seguridad:** Utiliza `puppeteer-extra-plugin-stealth` para evitar bloqueos por detección de bots.
 * **Microservicio Dockerizado:** Configuración lista para desplegar en cualquier entorno con Docker y Docker Compose.
 * **Caché Inteligente:** Almacenamiento en memoria RAM (TTL 24h) para respuestas instantáneas en RUCs ya consultados.
@@ -12,11 +12,12 @@ Este microservicio es una API REST construida con **Node.js**, **Express** y **P
 
 ## Tecnologías
 
-* **Runtime:** Node.js v20
-* **Framework:** Express.js
-* **Automatización:** Puppeteer Extra + Stealth Plugin
-* **Contenedor:** Docker & Docker Compose
-* **Caché:** Node-cache
+* **Entorno de Ejecución:** [Node.js](https://nodejs.org/) v20+
+* **Servidor Web:** [Express.js](https://expressjs.com/)
+* **Navegación & Scraping:** [Puppeteer Extra](https://github.com/berstend/puppeteer-extra) con [Stealth Plugin](https://www.npmjs.com/package/puppeteer-extra-plugin-stealth)
+* **Gestión de Memoria:** [Node-cache](https://www.npmjs.com/package/node-cache) (TTL de 24 horas)
+* **Seguridad & Control:** [Express-rate-limit](https://www.npmjs.com/package/express-rate-limit)
+* **Infraestructura:** [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
 
 ## Instalación y Uso con Docker
 
