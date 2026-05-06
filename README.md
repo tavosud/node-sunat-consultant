@@ -4,11 +4,13 @@ Este microservicio es una API REST construida con **Node.js**, **Express** y **P
 
 ## Características
 
-* **Extracción Completa:** Captura RUC, Razón Social, Nombre Comercial, Estado, Condición, Domicilio Fiscal.
+* **Extracción Extendida:** Además de los datos básicos, captura campos como Tipo de Contribuyente, Tipo de Documento, Fechas, Sistemas de Emisión, Actividades Económicas, etc.
 * **Bypass de Seguridad:** Utiliza `puppeteer-extra-plugin-stealth` para evitar bloqueos por detección de bots.
 * **Microservicio Dockerizado:** Configuración lista para desplegar en cualquier entorno con Docker y Docker Compose.
 * **Caché Inteligente:** Almacenamiento en memoria RAM (TTL 24h) para respuestas instantáneas en RUCs ya consultados.
 * **Mapeo Robusto:** Lógica basada en etiquetas de texto para prevenir errores si la SUNAT cambia el orden de las filas.
+* **Respuesta Limpia:** Los campos vacíos, `N/A`, `NO REGISTRADO` o `-` no se devuelven en el JSON (así el frontend no los muestra).
+* **Control de abuso:** Rate limit de 15 solicitudes por minuto por IP.
 
 ## Tecnologías
 
@@ -43,6 +45,12 @@ Asegúrate de tener instalado [Docker](https://www.docker.com/) y [Docker Compos
   "ruc": "20212331377"
 }
 ```
+También acepta este formato (compatibilidad):
+```json
+{
+  "id": "20212331377"
+}
+```
 **Respuesta Exitosa:** `(200 OK)`
 
 ```json
@@ -51,10 +59,20 @@ Asegúrate de tener instalado [Docker](https://www.docker.com/) y [Docker Compos
     "data": {
         "ruc": "20212331377",
         "razonSocial": "GRUPO DELTRON S.A.",
+        "tipoContribuyente": "SOCIEDAD ANONIMA",
+        "tipoDocumento": "RUC 20212331377 - GRUPO DELTRON S.A.",
         "nombreComercial": "DELTRON",
+        "fechaInscripcion": "05/08/2002",
+        "fechaInicioActividades": "05/08/2002",
         "estado": "ACTIVO",
         "condicion": "HABIDO",
-        "domicilioFiscal": "CAL.RAUL REBAGLIATI NRO. 170 URB. SANTA CATALINA LIMA - LIMA - LA VICTORIA"
+        "domicilioFiscal": "CAL.RAUL REBAGLIATI NRO. 170 URB. SANTA CATALINA LIMA - LIMA - LA VICTORIA",
+        "sistemaEmisionComprobante": "MANUAL",
+        "actividadComercioExterior": "SIN ACTIVIDAD",
+        "sistemaContabilidad": "MANUAL",
+        "actividadesEconomicas": [
+            "Principal - 6202 - CONSULTORÍA DE INFORMÁTICA Y GESTIÓN DE INSTALACIONES INFORMÁTICAS"
+        ]
     }
 }
 ```
@@ -69,6 +87,12 @@ Asegúrate de tener instalado [Docker](https://www.docker.com/) y [Docker Compos
   "dni": "44548533"
 }
 ```
+También acepta este formato (compatibilidad):
+```json
+{
+  "id": "44548533"
+}
+```
 **Respuesta Exitosa:** `(200 OK)`
 
 ```json
@@ -77,13 +101,23 @@ Asegúrate de tener instalado [Docker](https://www.docker.com/) y [Docker Compos
     "data": {
         "ruc": "10445485336",
         "razonSocial": "ESTEBAN VILLANUEVA CARMEN YESENIA",
-        "nombreComercial": "-",
         "estado": "ACTIVO",
-        "condicion": "HABIDO",
-        "domicilioFiscal": "-"
+        "condicion": "HABIDO"
     }
 }
 ```
+
+## Campos disponibles
+Dependiendo del contribuyente, la SUNAT puede devolver (y el servicio intentará capturar) los siguientes campos. Si un campo no existe o viene vacío, no se incluirá en `data`.
+
+- `ruc`, `razonSocial`, `tipoContribuyente`, `tipoDocumento`, `nombreComercial`
+- `fechaInscripcion`, `fechaInicioActividades`
+- `estado`, `condicion`, `domicilioFiscal`
+- `sistemaEmisionComprobante`, `actividadComercioExterior`, `sistemaContabilidad`
+- `actividadesEconomicas` (array)
+- `comprobantesImpresion` (array)
+- `sistemaEmisionElectronica` (array)
+- `emisorElectronicoDesde`, `comprobantesElectronicos`
 
 ## Desarrollo local sin Docker
 Si prefieres correrlo directamente en tu máquina:
@@ -98,4 +132,6 @@ npm install
 node server.js
 ```
 
-**Nota:** Debes tener instalado Chrome o Chromium en tu sistema.
+**Notas:**
+- Debes tener instalado Chrome o Chromium en tu sistema (Puppeteer lo gestionará según tu entorno).
+- Si SUNAT muestra captcha o bloquea el acceso, el scraping puede fallar aunque el servicio esté funcionando correctamente.
